@@ -24,8 +24,6 @@
 #import <iostream>
 
 struct hello_event {
-    hello_event() {}
-    ~hello_event() {}
     void say_hello()
     { std::cout << "hello world !" << std::endl; }
 };
