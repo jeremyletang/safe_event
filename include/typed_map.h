@@ -30,6 +30,11 @@
 
 namespace se {
 
+template<typename T>
+void deleter(void* d) {
+    delete (T*)d;
+}
+
 // an map encapsulation to store any type in the same map
 // only one instance of each type can be stored inside the map
 class typed_map {
@@ -37,9 +42,15 @@ class typed_map {
 private:
 
     // the map, each type is referenced by it's type_index and cast to void*
-    std::unordered_map<std::type_index, void *> map;
+    std::unordered_map<std::type_index, std::pair<void *, std::function<void(void*)>>> map;
 
 public:
+
+    ~typed_map() {
+        for (auto &it : this->map) {
+            it.second.second(it.second.first);
+        }
+    }
 
     // add a new type instance inside the map.
     // the first type parameter is the type of the new object to insert in the map
@@ -51,7 +62,8 @@ public:
         T *inst = new T(args...);
 
         if (inst == nullptr) { return false; }
-        map.emplace(std::type_index(typeid(T)), inst);
+        auto f = deleter<T>;
+        map.emplace(std::type_index(typeid(T)), std::make_pair(inst, f));
         return true;
     }
 
@@ -62,7 +74,7 @@ public:
         auto it = this->map.find(std::type_index(typeid(T)));
 
         if (it == this->map.end()) { return nullptr; }
-        return static_cast<T*>(it->second);
+        return static_cast<T*>(it->second.first);
     }
 
     // check if an instance of T is already on the map
@@ -73,7 +85,7 @@ public:
     template<typename T, class ...A>
     bool apply_while(std::function<bool(T*, A...)> f, A... args) {
         for (auto it = this->map.begin(); it != this->map.end(); ++it) {
-            if (f(static_cast<T*>(it->second, args)...) == true) {
+            if (f(static_cast<T*>(it->second.first, args)...) == true) {
                 return true;
             }
         }

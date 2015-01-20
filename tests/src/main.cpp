@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#import <safe_event>
-#import <iostream>
+#include <safe_event>
+#include <iostream>
 
 struct hello_event {
     void say_hello()
@@ -36,7 +36,7 @@ main() {
     ev_disp.add_event<hello_event>();
 
     // listen hello_event
-    ev_disp.listen(std::function<void(const hello_event& ev)>([](const hello_event& ev) {
+    ev_disp.listen(std::function<void(const hello_event&)>([](const hello_event&) {
         std::cout << "This is a real hello_event !" << std::endl;;
     }));
 
