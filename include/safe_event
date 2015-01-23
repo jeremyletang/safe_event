@@ -21,6 +21,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#ifndef SAFE_EVENT
+#define SAFE_EVENT
+
 #include "event.h"
 #include "typed_map.h"
 #include "dispatcher.h"
+
+#endif

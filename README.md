@@ -3,8 +3,8 @@ C++ 11/14 type safe light event system
 
 ## A simple example
 ```C++
-#import <safe_event>
-#import <iostream>
+#include <safe_event>
+#include <iostream>
 
 struct hello_event {
     void say_hello()
